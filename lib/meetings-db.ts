@@ -79,7 +79,7 @@ const meetings: SacramentMeeting[] = [
   },
   {
     id: 5,
-    date: '2026-04-5',
+    date: '2026-04-05',
     meetingType: 'testimony',
     presiding: 'Bishop Smith',
     conducting: 'Brother Stone',
