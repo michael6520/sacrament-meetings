@@ -60,7 +60,7 @@ const meetings: SacramentMeeting[] = [
   },
   {
     id: 4,
-    date: '2026-04-12',
+    date: '2026-09-13',
     meetingType: 'regular',
     presiding: 'Bishop Smith',
     conducting: 'Brother Smith',
@@ -79,7 +79,7 @@ const meetings: SacramentMeeting[] = [
   },
   {
     id: 5,
-    date: '2026-04-05',
+    date: '2026-09-20',
     meetingType: 'testimony',
     presiding: 'Bishop Smith',
     conducting: 'Brother Stone',
