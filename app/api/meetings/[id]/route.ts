@@ -16,7 +16,7 @@ export async function GET(request: NextRequest, { params }: RouteContext) {
     );
   }
 
-  const meeting = getMeetingById(numericId);
+  const meeting = await getMeetingById(numericId);
 
   if (!meeting) {
     return NextResponse.json(

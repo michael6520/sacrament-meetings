@@ -16,11 +16,11 @@ function toISODateString(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
-export default function CurrentMeetingRedirect() {
+export default async function CurrentMeetingRedirect() {
   const sunday = getMostRecentSunday();
   const isoDate = toISODateString(sunday);
 
-  const matches = getMeetings(isoDate);
+  const matches = await getMeetings('', 1, isoDate); 
 
   if (matches.length > 0) {
     redirect(`/meetings/${matches[0].id}`);
