@@ -1,5 +1,7 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import MeetingDetail from "@/components/MeetingDetail";
+import DeleteMeetingButton from "@/components/DeleteMeetingButton";
 import type { SacramentMeeting } from "@/lib/types";
 
 function getBaseUrl(): string {
@@ -36,6 +38,21 @@ export default async function MeetingPage({ params }: MeetingPageProps) {
   }
 
   const meeting: SacramentMeeting = await res.json();
+  const label = new Date(`${meeting.date}T00:00:00`).toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
 
-  return <MeetingDetail meeting={meeting} />;
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center gap-4">
+        <Link href={`/meetings/${meeting.id}/edit`} className="text-sm text-primary hover:underline">
+          Edit
+        </Link>
+        <DeleteMeetingButton id={meeting.id} label={label} />
+      </div>
+      <MeetingDetail meeting={meeting} />
+    </div>
+  );
 }
