@@ -4,7 +4,7 @@ import { emptyValues } from '@/lib/meeting-form-utils';
 
 export default function NewMeetingPage() {
   return (
-    <div className="mt-4 space-y-6">
+    <div className="mt-4 space-y-6 mx-auto max-w-4xl">
       <h2 className="text-2xl font-semibold text-foreground">New Meeting</h2>
       <MeetingForm
         action={createMeeting}

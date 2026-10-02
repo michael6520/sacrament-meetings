@@ -79,20 +79,64 @@ export async function getMeetingById(
   return (rows[0] as unknown as SacramentMeeting) ?? null;
 }
 
-// Mutation stubs — will be wired to the database in Week 04
 export async function addMeeting(
   data: Omit<SacramentMeeting, 'id'>
 ): Promise<SacramentMeeting> {
-  throw new Error('addMeeting: database implementation coming in Week 04');
+  const rows = await sql`
+    INSERT INTO meetings (
+      date, meeting_type, presiding, conducting, announcements,
+      opening_hymn, opening_prayer, ward_business, stake_business,
+      sacrament_hymn, speakers, closing_hymn, closing_prayer
+    ) VALUES (
+      ${data.date}::date,
+      ${data.meetingType},
+      ${data.presiding},
+      ${data.conducting},
+      ${data.announcements ?? []}::text[],
+      ${JSON.stringify(data.openingHymn)}::jsonb,
+      ${data.openingPrayer},
+      ${JSON.stringify(data.wardBusiness)}::jsonb,
+      ${data.stakeBusiness},
+      ${JSON.stringify(data.sacramentHymn)}::jsonb,
+      ${JSON.stringify(data.speakers)}::jsonb,
+      ${JSON.stringify(data.closingHymn)}::jsonb,
+      ${data.closingPrayer}
+    )
+    RETURNING id
+  `;
+  const created = await getMeetingById(Number(rows[0].id));
+  return created as SacramentMeeting;
 }
 
 export async function updateMeeting(
   id: number,
   updates: Partial<SacramentMeeting>
 ): Promise<SacramentMeeting | null> {
-  throw new Error('updateMeeting: database implementation coming in Week 04');
+  const existing = await getMeetingById(id);
+  if (!existing) return null;
+  const m = { ...existing, ...updates };
+
+  await sql`
+    UPDATE meetings SET
+      date            = ${m.date}::date,
+      meeting_type    = ${m.meetingType},
+      presiding       = ${m.presiding},
+      conducting      = ${m.conducting},
+      announcements   = ${m.announcements ?? []}::text[],
+      opening_hymn    = ${JSON.stringify(m.openingHymn)}::jsonb,
+      opening_prayer  = ${m.openingPrayer},
+      ward_business   = ${JSON.stringify(m.wardBusiness)}::jsonb,
+      stake_business  = ${m.stakeBusiness},
+      sacrament_hymn  = ${JSON.stringify(m.sacramentHymn)}::jsonb,
+      speakers        = ${JSON.stringify(m.speakers)}::jsonb,
+      closing_hymn    = ${JSON.stringify(m.closingHymn)}::jsonb,
+      closing_prayer  = ${m.closingPrayer}
+    WHERE id = ${id}
+  `;
+  return getMeetingById(id);
 }
 
 export async function deleteMeeting(id: number): Promise<boolean> {
-  throw new Error('deleteMeeting: database implementation coming in Week 04');
+  const rows = await sql`DELETE FROM meetings WHERE id = ${id} RETURNING id`;
+  return rows.length > 0;
 }
