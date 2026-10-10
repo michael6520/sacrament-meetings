@@ -3,6 +3,9 @@ import MeetingForm from '@/components/MeetingForm';
 import { updateMeeting } from '@/lib/actions';
 import { getMeetingById } from '@/lib/meetings-db';
 import { meetingToValues } from '@/lib/meeting-form-utils';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = { title: "Edit Meeting", robots: { index: false } };
 
 export default async function EditMeetingPage({
   params,

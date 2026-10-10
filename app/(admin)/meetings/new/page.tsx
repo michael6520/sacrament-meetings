@@ -1,6 +1,9 @@
 import MeetingForm from '@/components/MeetingForm';
 import { createMeeting } from '@/lib/actions';
 import { emptyValues } from '@/lib/meeting-form-utils';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = { title: "New Meeting", robots: { index: false } };
 
 export default function NewMeetingPage() {
   return (

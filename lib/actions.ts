@@ -1,5 +1,7 @@
 'use server';
 
+import { signIn, auth } from '@/auth';
+import { AuthError } from 'next-auth';
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect, notFound } from 'next/navigation';
@@ -17,6 +19,28 @@ import {
   type FormValues,
 } from './meeting-form-utils';
 import type { SacramentMeeting } from './types';
+
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData,
+) {
+  try {
+    await signIn('credentials', formData);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return error.type === 'CredentialsSignin'
+        ? 'Invalid email or password.'
+        : 'Something went wrong.';
+    }
+    throw error; // required so the redirect works
+  }
+}
+
+async function requireOwnerSession() {
+  const session = await auth();
+  if (!session?.user) throw new Error('Not authenticated');
+  return session;
+}
 
 const hymnNumber = z.coerce
   .number()
@@ -107,6 +131,8 @@ export async function createMeeting(
   prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
+  await requireOwnerSession();
+
   const result = validate(formData);
   if (!result.ok) return result.state;
 
@@ -126,6 +152,8 @@ export async function updateMeeting(
   prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
+  await requireOwnerSession();
+
   const result = validate(formData);
   if (!result.ok) return result.state;
 
@@ -145,6 +173,8 @@ export async function updateMeeting(
 }
 
 export async function deleteMeeting(id: number): Promise<void> {
+  await requireOwnerSession();
+  
   try {
     await deleteMeetingInDb(id);
   } catch (error) {

@@ -1,11 +1,12 @@
-export default function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+import { redirect } from 'next/navigation';
+import { auth } from '@/auth';
+
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  const session = await auth();
+  if (!session?.user) redirect('/login');
+
   return (
     <div>
-      {/* Authentication will be scaffolded here in Week 05 */}
       <main>{children}</main>
     </div>
   );

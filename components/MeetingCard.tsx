@@ -6,7 +6,13 @@ interface MeetingCardProps {
   meeting: SacramentMeeting;
 }
 
-export default function MeetingCard({ meeting }: MeetingCardProps) {
+export default function MeetingCard({
+  meeting,
+  isOwner = false,
+}: {
+  meeting: SacramentMeeting;
+  isOwner?: boolean;
+}) {
   const formattedDate = new Date(`${meeting.date}T00:00:00`).toLocaleDateString(
     "en-US",
     { weekday: "long", month: "long", day: "numeric", year: "numeric" }
@@ -25,15 +31,17 @@ export default function MeetingCard({ meeting }: MeetingCardProps) {
           Presiding: {meeting.presiding}
         </p>
       </Link>
-      <div className="flex items-center gap-4 border-t border-border px-4 py-2">
-        <Link
-          href={`/meetings/${meeting.id}/edit`}
-          className="text-sm text-primary hover:underline"
-        >
-          Edit<span className="sr-only"> meeting on {formattedDate}</span>
-        </Link>
-        <DeleteMeetingButton id={meeting.id} label={formattedDate} />
-      </div>
+      {isOwner && (
+        <div className="flex items-center gap-4 border-t border-border px-4 py-2">
+          <Link
+            href={`/meetings/${meeting.id}/edit`}
+            className="text-sm text-primary hover:underline"
+          >
+            Edit<span className="sr-only"> meeting on {formattedDate}</span>
+          </Link>
+          <DeleteMeetingButton id={meeting.id} label={formattedDate} />
+        </div>
+      )}
     </article>
   );
 }
